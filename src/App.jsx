@@ -43,7 +43,7 @@ function App() {
     try {
       if (modal.tipo === 'pdv') {
         formData.append('file', arquivoPdv); 
-        await axios.post('https://rnplanner-api-ekc2hratcvgqhgc5.brazilsouth-01.azurewebsites.net/pdvs/importar', formData, {
+        await axios.post('https://rnplanner-api-ekc2hratcvgqhgc5.brazilsouth-01.azurewebsites.net/pdvs/upload', formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
         mostrarFeedback('sucesso', '✅ Planilha processada! Os PDVs foram carimbados com seus respectivos setores no banco.');
