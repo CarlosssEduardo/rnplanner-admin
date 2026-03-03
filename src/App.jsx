@@ -6,7 +6,7 @@ function App() {
   const [arquivoPdv, setArquivoPdv] = useState(null);
   const [arquivoEntrega, setArquivoEntrega] = useState(null);
   
-  // 🔥 ESTADOS NOVOS DA LISTA VIP
+  // 🔥 LISTA VIP
   const [setorVip, setSetorVip] = useState('');
   const [setoresLiberados, setSetoresLiberados] = useState([]);
 
@@ -14,7 +14,6 @@ function App() {
   const [modal, setModal] = useState({ visivel: false, tipo: '', titulo: '', mensagem: '', arquivo: '' });
   const [feedback, setFeedback] = useState({ visivel: false, tipo: '', mensagem: '' });
 
-  // ⚠️ A URL DO SEU BACK-END NO AZURE
   const BASE_URL = 'https://rnplanner-api-ekc2hratcvgqhgc5.brazilsouth-01.azurewebsites.net';
 
   const mostrarFeedback = (tipo, mensagem) => {
@@ -22,7 +21,7 @@ function App() {
     setTimeout(() => setFeedback({ visivel: false, tipo: '', mensagem: '' }), 4000);
   };
 
-  // 🔥 BUSCA OS SETORES QUE JÁ ESTÃO LIBERADOS QUANDO ABRIR O PAINEL
+  // BUSCA OS SETORES QUE JÁ ESTÃO LIBERADOS QUANDO ABRIR O PAINEL
   useEffect(() => {
     carregarListaVip();
   }, []);
@@ -52,7 +51,7 @@ function App() {
     }
   };
 
-  // 🔥 FUNÇÃO PARA CORTAR O ACESSO
+  // FUNÇÃO PARA BLOQUEAR O ACESSO
   const handleRemoverVip = async (id, numeroSetor) => {
     if(!window.confirm(`Tem certeza que deseja bloquear o acesso do setor ${numeroSetor}?`)) return;
     
@@ -69,7 +68,7 @@ function App() {
     if (!arquivoPdv) return;
     setModal({
       visivel: true, tipo: 'pdv', titulo: 'Confirmar Atualização de Setor 🏪',
-      mensagem: 'O sistema vai ler a planilha da Ambev, identificar o número do setor 503 (ou outro) direto na coluna e atualizar o banco de dados dos clientes.',
+      mensagem: 'O sistema vai ler a planilha da Ambev, identificar o número do setor direto na coluna e atualizar o Pdv de cada Setor..',
       arquivo: arquivoPdv.name
     });
   };
@@ -78,7 +77,7 @@ function App() {
     if (!arquivoEntrega) return;
     setModal({
       visivel: true, tipo: 'entrega', titulo: 'Confirmar Rota Logística 🚚',
-      mensagem: 'Isso vai atualizar o status dos caminhões e placas no rastreio em tempo real.',
+      mensagem: 'Isso vai atualizar o status das entregas.',
       arquivo: arquivoEntrega.name
     });
   };
@@ -103,7 +102,7 @@ function App() {
         await axios.post(`${BASE_URL}/entregas/upload`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        mostrarFeedback('sucesso', '🚚 Logística de entregas atualizada!');
+        mostrarFeedback('sucesso', '🚚 Mapeamento da Logística atualizado!');
         setArquivoEntrega(null);
       }
       fecharModal();
@@ -122,9 +121,9 @@ function App() {
       <header className="admin-header">
         <div className="logo-area">
           <h1>Painel de Comando 🦅</h1>
-          <span className="subtitle">RN Planner - Backoffice</span>
+          <span className="subtitle">RN Planner - Setor Administrativo </span>
         </div>
-        <span className="badge-admin">Acesso Restrito - Admin</span>
+        <span className="badge-admin">Acesso Restrito - Admin - Carlos Eduardo</span>
       </header>
 
       <main className="admin-content">
@@ -132,18 +131,18 @@ function App() {
           
           <div className="upload-card card-pdv">
             <h2>🏪 Clientes do Setor</h2>
-            <p>Suba o arquivo Excel/CSV original com a coluna do setor para alimentar o aplicativo da rua.</p>
+            <p>Suba o arquivo Excel/CSV original com a coluna do setor para alimentar o aplicativo da RnPlanner.</p>
             <div className="file-input-wrapper">
               <input type="file" className="input-arquivo" accept=".csv, .xlsx, .xls" onChange={(e) => setArquivoPdv(e.target.files[0])} />
             </div>
             <button className={`btn-upload ${arquivoPdv ? 'btn-pdv-pronto' : ''}`} onClick={handleUploadPdv} disabled={!arquivoPdv}>
-              {arquivoPdv ? '🚀 ATUALIZAR SETOR' : 'ESCOLHER PLANILHA DE PDVS'}
+              {arquivoPdv ? '🚀 ATUALIZAR SETOR' : 'ESCOLHER PLANILHA DO SETOR'}
             </button>
           </div>
 
           <div className="upload-card card-entrega">
             <h2>🚚 Rotas de Entrega</h2>
-            <p>Suba o arquivo logístico para atualizar o status dos caminhões e placas.</p>
+            <p>Suba o arquivo logístico para atualizar o status de entregas.</p>
             <div className="file-input-wrapper wrapper-blue">
               <input type="file" className="input-arquivo" accept=".csv, .xlsx, .xls" onChange={(e) => setArquivoEntrega(e.target.files[0])} />
             </div>
@@ -152,10 +151,10 @@ function App() {
             </button>
           </div>
 
-          {/* 🔥 NOVO CARTÃO: GESTÃO DE ACESSOS (LISTA VIP) */}
+          {/* 🔥 GESTÃO DE ACESSOS (LISTA VIP) */}
           <div className="upload-card card-vip">
             <h2>🔑 Gestão de Acessos</h2>
-            <p>Libere o aplicativo de rua para um RN específico mesmo sem rota na nuvem.</p>
+            <p>Gerenciar Acesso ao RNPlanner </p>
             
             <div className="vip-input-row" style={{ display: 'flex', gap: '10px', marginTop: '15px', marginBottom: '15px' }}>
               <input 
