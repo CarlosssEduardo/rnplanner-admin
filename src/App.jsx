@@ -67,8 +67,8 @@ function App() {
   const handleUploadPdv = () => {
     if (!arquivoPdv) return;
     setModal({
-      visivel: true, tipo: 'pdv', titulo: 'Confirmar Atualização de Setor 🏪',
-      mensagem: 'O sistema vai ler a planilha da Ambev, identificar o número do setor direto na coluna e atualizar o Pdv de cada Setor..',
+      visivel: true, tipo: 'pdv', titulo: 'Confirmar Planificador PDF 🏪',
+      mensagem: 'O sistema vai ler o PDF, extrair as metas do dia (Subdivisão de Tasks, Missões, Ofertas) e identificar o RKG e Score 5 dos clientes.',
       arquivo: arquivoPdv.name
     });
   };
@@ -91,10 +91,11 @@ function App() {
     try {
       if (modal.tipo === 'pdv') {
         formData.append('file', arquivoPdv); 
-        await axios.post(`${BASE_URL}/pdvs/upload`, formData, {
+        // 🔥 MUDANÇA: Agora envia para a nova porta /upload-pdf que criamos no Java
+        await axios.post(`${BASE_URL}/pdvs/upload-pdf`, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
-        mostrarFeedback('sucesso', '✅ Planilha processada! Os PDVs foram carimbados com seus respectivos setores no banco.');
+        mostrarFeedback('sucesso', '✅ PDF processado! As metas diárias e o RKG foram atualizados com sucesso.');
         setArquivoPdv(null);
         
       } else if (modal.tipo === 'entrega') {
@@ -109,7 +110,7 @@ function App() {
 
     } catch (error) {
       console.error("Erro na requisição:", error);
-      mostrarFeedback('erro', '❌ Falha na importação. O banco bloqueou ou o arquivo está incorreto.');
+      mostrarFeedback('erro', '❌ Falha na importação. O arquivo não é um PDF válido ou está fora do padrão.');
       fecharModal();
     } finally {
       setLoading(false);
@@ -130,13 +131,15 @@ function App() {
         <div className="cards-grid">
           
           <div className="upload-card card-pdv">
-            <h2>🏪 Clientes do Setor</h2>
-            <p>Suba o arquivo Excel/CSV original com a coluna do setor para alimentar o aplicativo da RnPlanner.</p>
+            <h2>🏪 Metas e Clientes</h2>
+            {/* 🔥 MUDANÇA NO TEXTO */}
+            <p>Suba o <b>Planificador em PDF</b> para atualizar as metas diárias, o RKG e o Score 5 do setor.</p>
             <div className="file-input-wrapper">
-              <input type="file" className="input-arquivo" accept=".csv, .xlsx, .xls" onChange={(e) => setArquivoPdv(e.target.files[0])} />
+              {/* 🔥 MUDANÇA NO ACCEPT: Agora só aceita .pdf */}
+              <input type="file" className="input-arquivo" accept=".pdf" onChange={(e) => setArquivoPdv(e.target.files[0])} />
             </div>
             <button className={`btn-upload ${arquivoPdv ? 'btn-pdv-pronto' : ''}`} onClick={handleUploadPdv} disabled={!arquivoPdv}>
-              {arquivoPdv ? '🚀 ATUALIZAR SETOR' : 'ESCOLHER PLANILHA DO SETOR'}
+              {arquivoPdv ? '🚀 ATUALIZAR METAS E PDVS' : 'ESCOLHER PLANIFICADOR PDF'}
             </button>
           </div>
 
@@ -151,7 +154,7 @@ function App() {
             </button>
           </div>
 
-          {/* 🔥 GESTÃO DE ACESSOS (LISTA VIP) */}
+          {/* 🔥 GESTÃO DE ACESSOS (LISTA VIP) MANTIDA EXATAMENTE IGUAL */}
           <div className="upload-card card-vip">
             <h2>🔑 Gestão de Acessos</h2>
             <p>Gerenciar Acesso ao RNPlanner </p>
@@ -159,7 +162,7 @@ function App() {
             <div className="vip-input-row" style={{ display: 'flex', gap: '10px', marginTop: '15px', marginBottom: '15px' }}>
               <input 
                 type="number" 
-                placeholder="Ex: 503" 
+                placeholder="Ex: 507" 
                 value={setorVip}
                 onChange={(e) => setSetorVip(e.target.value)}
                 style={{ flex: 1, padding: '12px', borderRadius: '8px', border: '1px solid #ccc', fontSize: '16px' }}
