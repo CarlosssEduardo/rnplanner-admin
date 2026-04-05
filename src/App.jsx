@@ -30,7 +30,7 @@ function App() {
   // 2. CONFIGURAÇÃO DE AMBIENTE (Environment Variable)
   // =========================================================================
   // Resolução inteligente: Utiliza o servidor local no desenvolvimento e a Azure em Produção.
-  const BASE_URL = import.meta.env.VITE_API_URL || 'https://rnplanner-api-ekc2hratcvgqhgc5.brazilsouth-01.azurewebsites.net';
+  const BASE_URL = import.meta.env.VITE_API_URL;
 
   // =========================================================================
   // 3. LIFECYCLE E HELPERS
